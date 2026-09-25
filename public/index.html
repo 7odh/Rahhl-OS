@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Achievement — نظام إدارة الإنجاز الشخصي</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Global Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="header-date" id="headerDateText">السبت، 25 سبتمبر 2026</div>
+          <div class="header-greeting">
+            <span class="greeting-icon">☀️</span>
+            <span class="greeting-title" id="greetingTitle">صباح الخير</span>
+          </div>
+          <div class="header-subtitle" id="greetingSub">يوم جديد .. فرصة جديدة</div>
+        </div>
+        <div class="header-actions">
+          <button class="rest-badge-btn" id="restModeHeaderBtn" title="وضع الراحة">
+            <span class="rest-icon">🏖️</span>
+            <span id="restBadgeLabel">راحة؟</span>
+          </button>
+          <button class="quick-add-btn" id="headerQuickAddBtn" title="إضافة سريعة">+</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Screens Container -->
+    <main class="main-content" id="mainContent">
+
+      <!-- 1. HOME SCREEN -->
+      <section class="screen active" id="screenHome">
+        <!-- Today's Achievement Card -->
+        <div class="achievement-card card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">إنجاز اليوم</h2>
+              <p class="card-subtitle" id="motivationalMessage">أحسنت! أنت على الطريق الصحيح</p>
+            </div>
+            <div class="flag-badge">⛰️</div>
+          </div>
+          <div class="progress-rings-row">
+            <div class="ring-item">
+              <div class="ring-wrapper">
+                <svg class="progress-ring" viewBox="0 0 80 80">
+                  <circle class="ring-bg" cx="40" cy="40" r="32" stroke="#10b981" stroke-opacity="0.15" stroke-width="7"/>
+                  <circle class="ring-fg" id="habitsRing" cx="40" cy="40" r="32" stroke="#10b981" stroke-width="7" stroke-dasharray="201.06" stroke-dashoffset="67"/>
+                </svg>
+                <div class="ring-text">
+                  <span class="ring-val" id="habitsDoneFraction">3/5</span>
+                  <span class="ring-percent" id="habitsPercent">60%</span>
+                </div>
+              </div>
+              <span class="ring-label">العادات</span>
+            </div>
+
+            <div class="ring-item">
+              <div class="ring-wrapper">
+                <svg class="progress-ring" viewBox="0 0 80 80">
+                  <circle class="ring-bg" cx="40" cy="40" r="32" stroke="#3b82f6" stroke-opacity="0.15" stroke-width="7"/>
+                  <circle class="ring-fg" id="tasksRing" cx="40" cy="40" r="32" stroke="#3b82f6" stroke-width="7" stroke-dasharray="201.06" stroke-dashoffset="96"/>
+                </svg>
+                <div class="ring-text">
+                  <span class="ring-val" id="tasksDoneFraction">4/6</span>
+                  <span class="ring-percent" id="tasksPercent">67%</span>
+                </div>
+              </div>
+              <span class="ring-label">المهام</span>
+            </div>
+
+            <div class="ring-item">
+              <div class="ring-wrapper">
+                <svg class="progress-ring" viewBox="0 0 80 80">
+                  <circle class="ring-bg" cx="40" cy="40" r="32" stroke="#f97316" stroke-opacity="0.15" stroke-width="7"/>
+                  <circle class="ring-fg" id="focusRing" cx="40" cy="40" r="32" stroke="#f97316" stroke-width="7" stroke-dasharray="201.06" stroke-dashoffset="96"/>
+                </svg>
+                <div class="ring-text">
+                  <span class="ring-val" id="focusHoursMinutes">1h 20m</span>
+                  <span class="ring-percent" id="focusPercent">52%</span>
+                </div>
+              </div>
+              <span class="ring-label">التركيز</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rest Mode Banner (if active) -->
+        <div class="rest-banner card" id="restBanner" style="display: none;">
+          <div class="rest-banner-icon">🏖️</div>
+          <div class="rest-banner-text">
+            <strong>وضع الراحة مفعّل لليوم</strong>
+            <p>العادات غير الضرورية مستثناة ولن تُحسب كتقصير. الاستراحة جزء من بناء القوة.</p>
+          </div>
+        </div>
+
+        <!-- Section: What should I do now? -->
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="dot-indicator green"></span>
+            <h3 class="section-title">ماذا عليّ أن أفعل الآن؟</h3>
+          </div>
+          <span class="section-count" id="todayItemsCount">6 عناصر</span>
+        </div>
+
+        <!-- Unified Action List -->
+        <div class="action-list" id="todayActionList">
+          <!-- Dynamic Items loaded via JavaScript -->
+        </div>
+
+        <!-- Home Add Button -->
+        <button class="btn-outline-primary" id="homeQuickAddBtn">
+          <span>＋ إضافة جديدة</span>
+        </button>
+
+        <!-- Daily Note & Review Widget -->
+        <div class="card note-card">
+          <div class="card-header">
+            <div class="header-with-icon">
+              <span class="icon-gold">📝</span>
+              <h4 class="card-title-sm">ملاحظة ومراجعة اليوم</h4>
+            </div>
+            <button class="chip-btn gold" id="openDailyReviewBtn">مراجعة اليوم 🧠</button>
+          </div>
+          <p class="note-preview" id="homeDailyNotePreview">لا توجد ملاحظة مسجلة بعد. دوّن ملخصًا سريعًا ليومك هنا...</p>
+        </div>
+      </section>
+
+      <!-- 2. PROGRESS SCREEN -->
+      <section class="screen" id="screenProgress">
+        <div class="segmented-tabs">
+          <button class="tab-btn active" data-tab="habits">العادات</button>
+          <button class="tab-btn" data-tab="goals">الأهداف</button>
+          <button class="tab-btn" data-tab="tasks">المهام</button>
+        </div>
+
+        <!-- Habits Tab -->
+        <div class="tab-content active" id="tabHabits">
+          <button class="btn-outline-primary" id="addHabitBtn">＋ إضافة عادة</button>
+          <div class="group-title">العادات النشطة</div>
+          <div class="items-list" id="habitsList"></div>
+          <div class="group-title text-muted" id="pausedHabitsTitle" style="display:none; margin-top: 16px;">
+            العادات المتوقفة مؤقتًا (تاريخها محفوظ)
+          </div>
+          <div class="items-list" id="pausedHabitsList"></div>
+        </div>
+
+        <!-- Goals Tab -->
+        <div class="tab-content" id="tabGoals">
+          <button class="btn-outline-primary purple" id="addGoalBtn">＋ إضافة هدف</button>
+          <div class="items-list" id="goalsList"></div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div class="tab-content" id="tabTasks">
+          <button class="btn-outline-primary blue" id="addTaskBtn">＋ إضافة مهمة</button>
+          <div class="group-title">المهام الحالية</div>
+          <div class="items-list" id="tasksList"></div>
+          <div class="group-title text-muted" style="margin-top: 16px;">المهام المنجزة</div>
+          <div class="items-list" id="completedTasksList"></div>
+        </div>
+      </section>
+
+      <!-- 3. FOCUS / POMODORO SCREEN -->
+      <section class="screen" id="screenFocus">
+        <div class="focus-timer-container">
+          <h2 class="screen-title">مؤقت التركيز (Pomodoro)</h2>
+
+          <!-- Big Countdown Arc -->
+          <div class="timer-display-box">
+            <svg class="timer-ring" viewBox="0 0 240 240">
+              <circle class="timer-bg" cx="120" cy="120" r="105" stroke="#f97316" stroke-opacity="0.15" stroke-width="12" fill="none"/>
+              <circle class="timer-fg" id="timerRingFg" cx="120" cy="120" r="105" stroke="#f97316" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="659.73" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-center-text">
+              <span class="timer-digits" id="timerDigits">25:00</span>
+              <span class="timer-state-label" id="timerStateLabel">وقت التركيز</span>
+              <span class="timer-linked-tag" id="timerLinkedTag">دراسة English</span>
+            </div>
+          </div>
+
+          <!-- Timer Buttons -->
+          <div class="timer-controls">
+            <button class="btn-play-pause" id="timerPlayPauseBtn" title="بدء / إيقاف مؤقت">▶</button>
+            <button class="btn-stop" id="timerStopBtn" title="إنهاء وحفظ الوقت الفعلي">⏹</button>
+          </div>
+
+          <!-- Session Link Card -->
+          <div class="card link-card">
+            <h4 class="card-title-sm">ربط الجلسة بـ:</h4>
+            <div class="chip-group" id="focusLinkTypeChips">
+              <button class="chip active" data-type="TASK">مهمة</button>
+              <button class="chip" data-type="GOAL">هدف</button>
+              <button class="chip" data-type="HABIT">عادة</button>
+              <button class="chip" data-type="NONE">جلسة حرة</button>
+            </div>
+            <select class="select-input" id="focusTargetSelect">
+              <option value="">اختر العنصر...</option>
+            </select>
+          </div>
+
+          <!-- Presets -->
+          <div class="card presets-card">
+            <h4 class="card-title-sm">اختيار مدة الجلسة:</h4>
+            <div class="presets-row">
+              <button class="preset-btn" data-min="15">15 د</button>
+              <button class="preset-btn active" data-min="25">25 د</button>
+              <button class="preset-btn" data-min="30">30 د</button>
+              <button class="preset-btn" data-min="45">45 د</button>
+              <button class="preset-btn" data-min="60">60 د</button>
+            </div>
+          </div>
+
+          <!-- Today's Focus History -->
+          <div class="card history-card">
+            <div class="card-header">
+              <h4 class="card-title-sm">سجل جلسات اليوم</h4>
+              <span class="focus-sum-badge" id="focusSumBadge">المجموع: 1س 20د</span>
+            </div>
+            <div class="focus-sessions-list" id="todaySessionsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. ANALYTICS & HISTORY SCREEN -->
+      <section class="screen" id="screenAnalytics">
+        <!-- Range Filter -->
+        <div class="segmented-tabs sm">
+          <button class="tab-btn active" data-range="weekly">أسبوعي</button>
+          <button class="tab-btn" data-range="biweekly">أسبوعين</button>
+          <button class="tab-btn" data-range="monthly">شهري</button>
+          <button class="tab-btn" data-range="custom">مخصص</button>
+        </div>
+
+        <!-- Overview Card -->
+        <div class="card">
+          <h3 class="card-title">نظرة عامة</h3>
+          <div class="overview-grid">
+            <div class="stat-box">
+              <span class="stat-num text-green">78%</span>
+              <span class="stat-label">إكمال العادات</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num text-blue">64%</span>
+              <span class="stat-label">إكمال المهام</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num text-orange">5h 35m</span>
+              <span class="stat-label">وقت التركيز</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-num text-purple">3</span>
+              <span class="stat-label">الأهداف النشطة</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Where did time go -->
+        <div class="card">
+          <h3 class="card-title">أين ذهب وقتك؟</h3>
+          <div class="time-bars-list">
+            <div class="time-bar-item">
+              <div class="time-bar-header">
+                <span><span class="dot-indicator blue"></span> English</span>
+                <span class="text-secondary">3h 20m (48%)</span>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill blue" style="width: 48%"></div></div>
+            </div>
+            <div class="time-bar-item">
+              <div class="time-bar-header">
+                <span><span class="dot-indicator purple"></span> Programming</span>
+                <span class="text-secondary">1h 10m (21%)</span>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill purple" style="width: 21%"></div></div>
+            </div>
+            <div class="time-bar-item">
+              <div class="time-bar-header">
+                <span><span class="dot-indicator orange"></span> Other</span>
+                <span class="text-secondary">1h 05m (16%)</span>
+              </div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill orange" style="width: 16%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Habits Consistency Bars -->
+        <div class="card">
+          <h3 class="card-title">تقدم العادات (هذا الأسبوع)</h3>
+          <div class="bar-chart-container">
+            <div class="bar-col"><div class="bar" style="height: 85%"></div><span>السبت</span></div>
+            <div class="bar-col"><div class="bar" style="height: 70%"></div><span>الأحد</span></div>
+            <div class="bar-col"><div class="bar" style="height: 90%"></div><span>الاثنين</span></div>
+            <div class="bar-col"><div class="bar" style="height: 80%"></div><span>الثلاثاء</span></div>
+            <div class="bar-col"><div class="bar" style="height: 65%"></div><span>الأربعاء</span></div>
+            <div class="bar-col"><div class="bar" style="height: 75%"></div><span>الخميس</span></div>
+            <div class="bar-col"><div class="bar rest" style="height: 50%"></div><span>الجمعة</span></div>
+          </div>
+        </div>
+
+        <!-- Timeline & Calendar History -->
+        <div class="section-header">
+          <h3 class="section-title">السجل التاريخي والتقويم</h3>
+        </div>
+
+        <div class="calendar-strip" id="calendarDaysStrip">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="timeline-list" id="historyTimelineList">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- 5. MORE / SETTINGS / EXPORT SCREEN -->
+      <section class="screen" id="screenMore">
+        <h2 class="screen-title">الإعدادات والتخصيص</h2>
+
+        <!-- Rest Mode Card -->
+        <div class="card">
+          <div class="card-row">
+            <div>
+              <h4 class="card-title-sm">وضع الراحة (Rest Mode)</h4>
+              <p class="card-subtitle">إخفاء العادات غير الضرورية في أيام الراحة وعدم احتسابها كتقصير.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="restModeSettingsSwitch">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- AI Export Section (Most Important feature from brief) -->
+        <div class="card ai-export-card">
+          <div class="card-header">
+            <div class="header-with-icon">
+              <span class="icon-sparkle">🤖</span>
+              <h4 class="card-title-sm">تصدير للذكاء الاصطناعي (AI Analysis)</h4>
+            </div>
+          </div>
+          <p class="card-subtitle">
+            يصدر تقريرًا منظمًا جدًا (Markdown) يحتوي على كامل بياناتك لمناقشتها مع ChatGPT أو Gemini أو Claude، بدون وجود AI داخل التطبيق.
+          </p>
+
+          <div class="chip-group" id="aiReportPeriodGroup" style="margin-top: 12px;">
+            <button class="chip active" data-period="7">آخر 7 أيام</button>
+            <button class="chip" data-period="1">اليوم</button>
+            <button class="chip" data-period="30">هذا الشهر</button>
+          </div>
+
+          <button class="btn-primary-green" id="generateAiReportBtn" style="margin-top: 14px;">
+            📄 توليد تقرير الذكاء الاصطناعي
+          </button>
+        </div>
+
+        <!-- Backup & Restore JSON -->
+        <div class="card">
+          <h4 class="card-title-sm">النسخ الاحتياطي والاستعادة (JSON)</h4>
+          <p class="card-subtitle">حفظ نسخة احتياطية محلية كاملة من عاداتك، مهامك، أهدافك، وجلساتك لاستعادتها في أي وقت.</p>
+          <div class="button-row" style="margin-top: 12px;">
+            <button class="btn-blue" id="exportBackupJsonBtn">💾 تصدير Backup JSON</button>
+            <button class="btn-secondary" id="importBackupJsonBtn">📥 استعادة Import</button>
+          </div>
+          <input type="file" id="backupFileInput" accept=".json" style="display: none;">
+        </div>
+
+        <!-- About Achievement -->
+        <div class="card about-card">
+          <h4 class="card-title-sm">Achievement — نظام إدارة الإنجاز الشخصي</h4>
+          <p class="about-quote">"خطوتك الصغيرة … تصنع إنجازك الكبير"</p>
+          <p class="card-subtitle" style="margin-top: 6px;">
+            تطبيق أوفلاين بالكامل (Offline First)، يحفظ خصوصيتك 100%، ولا يشارك أي بيانات عبر الإنترنت.
+          </p>
+          <div class="about-footer">نفسك اليوم .. أقوى من أمس ⛰️</div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-target="screenHome" id="navHome">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">الرئيسية</span>
+      </button>
+      <button class="nav-item" data-target="screenProgress" id="navProgress">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">الإنجازات</span>
+      </button>
+      <button class="nav-item" data-target="screenFocus" id="navFocus">
+        <span class="nav-icon">⏱️</span>
+        <span class="nav-label">التركيز</span>
+      </button>
+      <button class="nav-item" data-target="screenAnalytics" id="navAnalytics">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">التقارير</span>
+      </button>
+      <button class="nav-item" data-target="screenMore" id="navMore">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">المزيد</span>
+      </button>
+    </nav>
+
+    <!-- Modals & Dialogs -->
+
+    <!-- Quick Add Menu Modal -->
+    <div class="modal-backdrop" id="modalQuickAddMenu">
+      <div class="modal-sheet">
+        <div class="modal-header">
+          <h3>ماذا تريد أن تضيف؟</h3>
+          <button class="modal-close" data-close="modalQuickAddMenu">✕</button>
+        </div>
+        <div class="quick-add-options">
+          <div class="quick-opt-item" data-open="modalAddTask">
+            <div class="opt-icon blue">✅</div>
+            <div class="opt-info">
+              <strong>مهمة جديدة</strong>
+              <p>عمل ينجز لمرة واحدة وله موعد محدد</p>
+            </div>
+          </div>
+          <div class="quick-opt-item" data-open="modalAddHabit">
+            <div class="opt-icon green">🔁</div>
+            <div class="opt-info">
+              <strong>عادة جديدة</strong>
+              <p>سلوك يتكرر يوميًا أو عدة مرات بالأسبوع</p>
+            </div>
+          </div>
+          <div class="quick-opt-item" data-open="modalAddGoal">
+            <div class="opt-icon purple">🎯</div>
+            <div class="opt-info">
+              <strong>هدف جديد</strong>
+              <p>مشروع كبير يتفرع منه مراحل وإنجازات</p>
+            </div>
+          </div>
+          <div class="quick-opt-item" data-action="goFocus">
+            <div class="opt-icon orange">⏱️</div>
+            <div class="opt-info">
+              <strong>جلسة تركيز</strong>
+              <p>بدء مؤقت بومودورو مسجل لوقتك</p>
+            </div>
+          </div>
+          <div class="quick-opt-item" data-open="modalAddNote">
+            <div class="opt-icon gold">📝</div>
+            <div class="opt-info">
+              <strong>ملاحظة سريعة</strong>
+              <p>تدوين فكرة أو ملخص سريع في يومياتك</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Task -->
+    <div class="modal-backdrop" id="modalAddTask">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>إضافة مهمة جديدة</h3>
+          <button class="modal-close" data-close="modalAddTask">✕</button>
+        </div>
+        <div class="form-group">
+          <label>عنوان المهمة *</label>
+          <input type="text" id="taskTitleInput" placeholder="مثلاً: إنهاء الوحدة 15 في Busuu" class="text-input">
+        </div>
+        <div class="form-group">
+          <label>الوصف (اختياري)</label>
+          <textarea id="taskDescInput" placeholder="تفاصيل إضافية..." class="text-input" rows="2"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>الأولوية</label>
+            <select id="taskPrioritySelect" class="select-input">
+              <option value="HIGH">عالية 🔴</option>
+              <option value="MEDIUM" selected>متوسطة 🟡</option>
+              <option value="LOW">منخفضة 🟢</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>المدة المقدرة</label>
+            <select id="taskEstMinSelect" class="select-input">
+              <option value="15">15 دقيقة</option>
+              <option value="25" selected>25 دقيقة</option>
+              <option value="45">45 دقيقة</option>
+              <option value="60">60 دقيقة</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>ربط بهدف (اختياري)</label>
+          <select id="taskGoalSelect" class="select-input">
+            <option value="">بدون هدف</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-close="modalAddTask">إلغاء</button>
+          <button class="btn-blue" id="confirmAddTaskBtn">حفظ المهمة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Habit -->
+    <div class="modal-backdrop" id="modalAddHabit">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>إنشاء عادة جديدة 🔁</h3>
+          <button class="modal-close" data-close="modalAddHabit">✕</button>
+        </div>
+        <div class="form-group">
+          <label>اسم العادة *</label>
+          <input type="text" id="habitNameInput" placeholder="مثلاً: قراءة، Busuu، تمرين" class="text-input">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>التكرار</label>
+            <select id="habitFreqSelect" class="select-input">
+              <option value="DAILY">يوميًا</option>
+              <option value="3_PER_WEEK">3 مرات أسبوعيًا</option>
+              <option value="CUSTOM">أيام محددة</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>الوقت المفضل (اختياري)</label>
+            <input type="text" id="habitTimeInput" placeholder="مثلاً: بعد الفجر أو 20:00" class="text-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="habitEssentialCheckbox">
+            <span>عادة أساسية (لا تستثنى في يوم الراحة مثل الصلاة والقرآن)</span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>ربط بهدف (اختياري)</label>
+          <select id="habitGoalSelect" class="select-input">
+            <option value="">بدون هدف</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-close="modalAddHabit">إلغاء</button>
+          <button class="btn-primary-green" id="confirmAddHabitBtn">حفظ العادة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Goal -->
+    <div class="modal-backdrop" id="modalAddGoal">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>إنشاء هدف جديد 🎯</h3>
+          <button class="modal-close" data-close="modalAddGoal">✕</button>
+        </div>
+        <div class="form-group">
+          <label>اسم الهدف *</label>
+          <input type="text" id="goalTitleInput" placeholder="مثلاً: الوصول لمستوى B1 في الإنجليزية" class="text-input">
+        </div>
+        <div class="form-group">
+          <label>التصنيف</label>
+          <select id="goalCategorySelect" class="select-input">
+            <option value="لغات">لغات</option>
+            <option value="برمجة">برمجة وتقنية</option>
+            <option value="صحة ولياقة">صحة ولياقة</option>
+            <option value="قراءة وتطوير">قراءة وتطوير</option>
+            <option value="عام">عام</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>مراحل الهدف (Milestones)</label>
+          <div id="goalMilestonesContainer" class="milestones-container">
+            <div class="milestone-chip">A1</div>
+            <div class="milestone-chip">A2</div>
+            <div class="milestone-chip">B1</div>
+          </div>
+          <div class="milestone-add-row">
+            <input type="text" id="milestoneInput" placeholder="أضف مرحلة (مثل C1)" class="text-input">
+            <button class="btn-icon" id="addMilestoneBtn">＋</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-close="modalAddGoal">إلغاء</button>
+          <button class="btn-purple" id="confirmAddGoalBtn">حفظ الهدف</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add Note -->
+    <div class="modal-backdrop" id="modalAddNote">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>ملاحظة اليوم 📝</h3>
+          <button class="modal-close" data-close="modalAddNote">✕</button>
+        </div>
+        <div class="form-group">
+          <textarea id="dailyNoteInput" placeholder="النهارده كنت تعبان لكن خلصت Busuu والجيم..." class="text-input" rows="4"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-close="modalAddNote">إلغاء</button>
+          <button class="btn-gold" id="confirmSaveNoteBtn">حفظ الملاحظة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Daily Review (End of Day) -->
+    <div class="modal-backdrop" id="modalDailyReview">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>مراجعة نهاية اليوم 🧠</h3>
+          <button class="modal-close" data-close="modalDailyReview">✕</button>
+        </div>
+        <div class="form-group">
+          <label>كيف كان يومك؟</label>
+          <div class="mood-selector">
+            <button class="mood-btn" data-mood="SAD">😞</button>
+            <button class="mood-btn" data-mood="NEUTRAL">😐</button>
+            <button class="mood-btn active" data-mood="HAPPY">🙂</button>
+            <button class="mood-btn" data-mood="EXCITED">😄</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>أكبر إنجاز حققته اليوم:</label>
+          <input type="text" id="reviewAchievementInput" placeholder="أهم شيء تم إنجازه..." class="text-input">
+        </div>
+        <div class="form-group">
+          <label>ما الذي لم يتم أو واجهت فيه صعوبة؟</label>
+          <input type="text" id="reviewNotDoneInput" placeholder="أمر تأجل أو يحتاج تركيز غدًا..." class="text-input">
+        </div>
+        <div class="form-group">
+          <label>ملاحظة عامة:</label>
+          <textarea id="reviewNoteInput" placeholder="شعورك أو فكرة تريد حفظها في تاريخ اليوم..." class="text-input" rows="2"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-close="modalDailyReview">إلغاء</button>
+          <button class="btn-cyan" id="confirmSaveReviewBtn">حفظ المراجعة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: AI Report / Export Preview -->
+    <div class="modal-backdrop" id="modalExportPreview">
+      <div class="modal-dialog lg">
+        <div class="modal-header">
+          <h3 id="exportPreviewTitle">تقرير الذكاء الاصطناعي (AI Analysis)</h3>
+          <button class="modal-close" data-close="modalExportPreview">✕</button>
+        </div>
+        <div class="export-preview-box">
+          <pre id="exportPreviewText"></pre>
+        </div>
+        <div class="modal-footer space-between">
+          <div class="footer-actions">
+            <button class="btn-primary-green" id="copyExportTextBtn">📋 نسخ النص</button>
+            <button class="btn-blue" id="shareExportTextBtn">📤 مشاركة</button>
+          </div>
+          <button class="btn-secondary" data-close="modalExportPreview">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="appToast">تمت العملية بنجاح</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

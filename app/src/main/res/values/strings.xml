@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Achievement</string>
+    <string name="tagline">خطوتك الصغيرة… تصنع إنجازك الكبير</string>
+    <string name="today_greeting_morning">صباح الخير</string>
+    <string name="today_greeting_sub">يوم جديد .. فرصة جديدة</string>
+    <string name="rest_day_active">اليوم راحة 🏖️</string>
+</resources>

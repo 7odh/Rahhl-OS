@@ -1,0 +1,6 @@
+{
+  "name": "Achievement",
+  "description": "نظام إدارة الإنجاز الشخصي والعادات والمهام وجلسات التركيز مع تقارير التصدير للذكاء الاصطناعي",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
